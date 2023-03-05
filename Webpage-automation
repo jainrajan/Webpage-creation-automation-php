@@ -1,0 +1,62 @@
+<?php
+
+// Load the Google API client library
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Create a new Google Sheets client
+$client = new Google_Client();
+$client->setApplicationName('My App');
+$client->setScopes([Google_Service_Sheets::SPREADSHEETS_READONLY]);
+$client->setAuthConfig('/path/to/credentials.json');
+
+// Define the ID of the Google Sheet containing the data
+$sheet_id = 'your-sheet-id';
+
+// Define the range of cells containing the data
+$data_range = 'Sheet1!A2:H126';
+
+// Create a new Google Sheets service instance
+$service = new Google_Service_Sheets($client);
+
+// Get the values from the Google Sheet
+$response = $service->spreadsheets_values->get($sheet_id, $data_range);
+$values = $response->getValues();
+
+// Define the path to the HTML template file
+$template_path = '/path/to/template.html';
+
+// Define the directory where the generated HTML pages will be saved
+$output_directory = '/path/to/output/directory';
+
+// Iterate through each row in the Google Sheet
+foreach ($values as $row) {
+    // Extract the values for each column from the current row
+    $meta_title = $row[0];
+    $meta_description = $row[1];
+    $name = $row[2];
+    $url = $row[3];
+    $image_name = $row[4];
+    $email = $row[5];
+    $linkedin = $row[6];
+    $twitter = $row[7];
+    $facebook = $row[8];
+    $phone = $row[9];
+    $address = $row[10];
+    $map = $row[11];
+    
+    // Read the contents of the template file
+    $template = file_get_contents($template_path);
+    
+    // Replace the placeholder values in the template with the corresponding data from the current row
+    $template = str_replace('{{meta_title}}', $meta_title, $template);
+    $template = str_replace('{{meta_description}}', $meta_description, $template);
+    $template = str_replace('{{name}}', $name, $template);
+    $template = str_replace('{{url}}', $url, $template);
+    $template = str_replace('{{image_name}}', $image_name, $template);
+    $template = str_replace('{{email}}', $email, $template);
+    $template = str_replace('{{linkedin}}', $linkedin, $template);
+    $template = str_replace('{{twitter}}', $twitter, $template);
+    $template = str_replace('{{facebook}}', $facebook, $template);
+    $template = str_replace('{{phone}}', $phone, $template);
+    $template = str_replace('{{address}}', $address, $template);
+    $template = str_replace
